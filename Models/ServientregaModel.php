@@ -66,7 +66,7 @@ class ServientregaModel extends Query
     public function actualizar_guia($data)
     {
         $token = "ef4983b54cc73a26d69eac01bca287d0a0f4db5a6eb535d41c29d9ce94a7eb6a";
-        
+
         $cas = json_encode($data);
 
         $sql = "INSERT INTO test (cas) VALUES (?)";
@@ -87,8 +87,59 @@ class ServientregaModel extends Query
         $sql = "INSERT INTO servi_data (guia, f_movimiento, h_movimiento, movimiento, estado, ciudad, observacion1, observacion2, observacion3) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $data = array($guia, $f_movimiento, $h_movimiento, $movimiento, $estado, $ciudad, $observacion1, $observacion2, $observacion3);
         $this->insert($sql, $data);
+
+        $this->cambioDeEstado($guia, $estado);
+
         http_response_code(200);
         echo "Recibido correctamente";
+    }
+    private function cambioDeEstado($guia, $estado)
+    {
+        $marketplace_db = $this->obtenerConexion('https://marketplace.imporsuit.com');
+        $sql_guia = "SELECT * FROM guia_laar where guia_laar = '$guia'";
+        $result_guia = mysqli_query($marketplace_db, $sql_guia);
+        $row_guia = mysqli_fetch_assoc($result_guia);
+        $tienda_venta = $row_guia['tienda_venta'];
+        $tienda_proveedor = $row_guia['tienda_proveedor'];
 
+        $tienda_venta_db = $this->obtenerConexion($tienda_venta);
+        $tienda_proveedor_db = $this->obtenerConexion($tienda_proveedor);
+
+        $sql_update = "UPDATE guia_laar SET estado_guia = '$estado' WHERE guia_laar = '$guia'";
+        $result_update = mysqli_query($marketplace_db, $sql_update);
+        $result_update_tienda_venta = mysqli_query($tienda_venta_db, $sql_update);
+        $result_update_tienda_proveedor = mysqli_query($tienda_proveedor_db, $sql_update);
+
+        mysqli_close($marketplace_db);
+        mysqli_close($tienda_venta_db);
+        mysqli_close($tienda_proveedor_db);
+        if ($result_update && $result_update_tienda_venta && $result_update_tienda_proveedor) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function obtenerConexion($tienda)
+    {
+        $archivo_tienda =  $tienda . '/sysadmin/vistas/db1.php';
+        $archivo_destino_tienda = "../db_destino_guia.php";
+        $contenido_tienda = file_get_contents($archivo_tienda);
+        $get_data = json_decode($contenido_tienda, true);
+        if (file_put_contents($archivo_destino_tienda, $contenido_tienda) !== false) {
+            $host_d = $get_data['DB_HOST'];
+            $user_d = $get_data['DB_USER'];
+            $pass_d = $get_data['DB_PASS'];
+            $base_d = $get_data['DB_NAME'];
+            // Conexión a la base de datos de la tienda, establece la hora -5 GTM
+            date_default_timezone_set('America/Guayaquil');
+            $conexion = mysqli_connect($host_d, $user_d, $pass_d, $base_d);
+            if (!$conexion) {
+                die("Connection failed: " . mysqli_connect_error());
+            }
+            return $conexion;
+        } else {
+            echo "Error al copiar el archivo";
+        }
     }
 }
