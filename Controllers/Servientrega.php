@@ -4,7 +4,13 @@ class Servientrega extends Controller
 {
     public function index()
     {
-        $this->views->render($this, "index");
+        $data = json_decode(file_get_contents("php://input"), true);
+        if(!empty($data)){
+            $this->model->actualizar_guia($data);
+        }else{
+            http_response_code(400);
+            echo "Error: No se recibieron datos";
+        }
     }
 
     public function Guia($id)

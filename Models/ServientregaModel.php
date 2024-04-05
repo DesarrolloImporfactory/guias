@@ -63,4 +63,32 @@ class ServientregaModel extends Query
         header("Content-Disposition: inline; filename=temp2.pdf");
         readfile($server_url);
     }
+    public function actualizar_guia($data)
+    {
+        $token = "ef4983b54cc73a26d69eac01bca287d0a0f4db5a6eb535d41c29d9ce94a7eb6a";
+        
+        $cas = json_encode($data);
+
+        $sql = "INSERT INTO test (cas) VALUES (?)";
+        $data = array($cas);
+        $this->insert($sql, $data);
+
+
+        $guia = $data['guia'];
+        $f_movimiento = $data['f_movimiento'];
+        $h_movimiento = $data['h_movimiento'];
+        $movimiento   = $data['movimiento'];
+        $estado       = $data['estado'];
+        $ciudad       = $data['ciudad'];
+        $observacion1 = $data['observacion1'];
+        $observacion2 = $data['observacion2'];
+        $observacion3 = $data['observacion3'];
+
+        $sql = "INSERT INTO servi_data (guia, f_movimiento, h_movimiento, movimiento, estado, ciudad, observacion1, observacion2, observacion3) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $data = array($guia, $f_movimiento, $h_movimiento, $movimiento, $estado, $ciudad, $observacion1, $observacion2, $observacion3);
+        $this->insert($sql, $data);
+        http_response_code(200);
+        echo "Recibido correctamente";
+
+    }
 }

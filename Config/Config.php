@@ -1,9 +1,9 @@
 <?php
 
 const HOST = 'localhost';
-const USER = "pruebas_imporsuit";
-const PASSWORD = "";
-const DB = "pruebas_imporsuit";
+const USER = "imporsuit_marketplace";
+const PASSWORD = "imporsuit_marketplace";
+const DB = "imporsuit_marketplace";
 const CHARSET = "utf8";
 
 const MARKETPLACE = HOST;
