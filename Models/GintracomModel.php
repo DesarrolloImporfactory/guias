@@ -26,7 +26,13 @@ class GintracomModel extends Query
     {
         $url = "https://ec.gintracom.site/web/import-suite/label";
         $response = $this->enviar_datos($url, $id);
-        echo $response;
+        $server_url =  "../temp2.pdf";
+
+        file_put_contents($server_url, $response);
+        //abrir el archivo
+        header("Content-type: application/pdf");
+        header("Content-Disposition: inline; filename=temp2.pdf");
+        readfile($server_url);
     }
 
     private function enviar_datos($url, $id)
@@ -63,14 +69,6 @@ class GintracomModel extends Query
         $response = $result;
         if (isset($response['error'])) {
             echo $response['error'];
-        } else {
-            $server_url =  "../temp2.pdf";
-
-            file_put_contents($server_url, $response);
-            //abrir el archivo
-            header("Content-type: application/pdf");
-            header("Content-Disposition: inline; filename=temp2.pdf");
-            readfile($server_url);
         }
 
         return $response;

@@ -11,7 +11,7 @@ class ServientregaModel extends Query
     public function visualizarGuia($id)
     {
         // URL del servicio web
-        $url = "https://181.39.87.158:7777/api/GuiaDigital/[" . $id . ",'impor.comex','123456']";
+        $url = "https://swservicli.servientrega.com.ec:5001/api/GuiaDigital/[" . $id . ",'integracion.api.1','54321']";
 
         // Inicializar cURL
         $ch = curl_init();
@@ -95,6 +95,30 @@ class ServientregaModel extends Query
         http_response_code(200);
         echo "Recibido correctamente";
     }
+
+    public function anularGuia($id)
+    {
+        $url = "https://swservicli.servientrega.com.ec:5052/api/guiawebs/['" . $id . "','integracion.api.1','54321']";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Omitir la verificación de SSL (NO recomendado para producción)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+        // Ejecutar la solicitud y obtener la respuesta
+        $response = curl_exec($ch);
+
+        // Verificar si ocurrió algún error
+        if (curl_errno($ch)) {
+            throw new Exception(curl_error($ch));
+        }
+
+        // Cerrar la sesión cURL
+        curl_close($ch);
+    }
+
     private function cambioDeEstado($guia, $estado)
     {
         $marketplace_db = $this->obtenerConexion('https://marketplace.imporsuit.com');

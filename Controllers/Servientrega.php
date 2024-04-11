@@ -5,9 +5,9 @@ class Servientrega extends Controller
     public function index()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        if(!empty($data)){
+        if (!empty($data)) {
             $this->model->actualizar_guia($data);
-        }else{
+        } else {
             http_response_code(400);
             echo "Error: No se recibieron datos";
         }
@@ -18,6 +18,15 @@ class Servientrega extends Controller
         //verificar id sea numerico}
         if (is_numeric($id)) {
             $this->model->visualizarGuia($id);
+        } else {
+            echo "Guia no valida";
+        }
+    }
+    public function Anular($id)
+    {
+        //verificar id sea numerico}
+        if (is_numeric($id)) {
+            $this->model->anularGuia($id);
         } else {
             echo "Guia no valida";
         }
