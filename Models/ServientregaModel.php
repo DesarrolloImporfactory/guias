@@ -68,12 +68,13 @@ class ServientregaModel extends Query
     {
         $token = "ef4983b54cc73a26d69eac01bca287d0a0f4db5a6eb535d41c29d9ce94a7eb6a";
 
-        $cas = json_encode($data);
+        /*  $cas = json_encode($data);
 
         $sql = "INSERT INTO test (cas) VALUES (?)";
         $data = array($cas);
         $this->insert($sql, $data);
 
+       $data = json_decode($data,true); */
 
         $guia = $data['guia'];
         $f_movimiento = $data['f_movimiento'];
@@ -89,7 +90,7 @@ class ServientregaModel extends Query
         $data = array($guia, $f_movimiento, $h_movimiento, $movimiento, $estado, $ciudad, $observacion1, $observacion2, $observacion3);
         $this->insert($sql, $data);
 
-        $this->cambioDeEstado($guia, $estado);
+        $this->cambioDeEstado($guia, $movimiento);
 
         http_response_code(200);
         echo "Recibido correctamente";

@@ -1,5 +1,6 @@
 <?php
-
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 class GintracomModel extends Query
 {
     public function __construct()
@@ -21,7 +22,7 @@ class GintracomModel extends Query
         echo $response;
     }
 
-    public function label($id)
+    public function labels($id)
     {
         $url = "https://ec.gintracom.site/web/import-suite/label";
         $response = $this->enviar_datos($url, $id);
@@ -30,6 +31,10 @@ class GintracomModel extends Query
 
     private function enviar_datos($url, $id)
     {
+        //Basic Auth
+        $username = 'importsuite';
+        $password = "ab5b809caf73b2c1abb0e4586a336c3a";
+
         $data = array("guia" => $id);
         $data_string = json_encode($data);
         //inicia curl
@@ -38,6 +43,8 @@ class GintracomModel extends Query
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
+
         curl_setopt(
             $ch,
             CURLOPT_HTTPHEADER,
@@ -51,12 +58,19 @@ class GintracomModel extends Query
         //cierra curl
         curl_close($ch);
         //decodifica el resultado
-        $response = json_decode($result, true);
+        //$response = json_decode($result, true);
         //verifica si hay error
+        $response = $result;
         if (isset($response['error'])) {
             echo $response['error'];
         } else {
-            echo $response['message'];
+            $server_url =  "../temp2.pdf";
+
+            file_put_contents($server_url, $response);
+            //abrir el archivo
+            header("Content-type: application/pdf");
+            header("Content-Disposition: inline; filename=temp2.pdf");
+            readfile($server_url);
         }
 
         return $response;
