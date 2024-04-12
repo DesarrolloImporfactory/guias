@@ -117,6 +117,8 @@ class ServientregaModel extends Query
 
         // Cerrar la sesión cURL
         curl_close($ch);
+        echo $response;
+        $this->cambioDeEstado($id, "101");
     }
 
     private function cambioDeEstado($guia, $estado)
