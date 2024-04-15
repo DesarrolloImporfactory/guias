@@ -35,4 +35,14 @@ class Gintracom extends Controller
             echo "Error: No se recibieron datos";
         }
     }
+
+    public function anular($id)
+    {
+        if (!empty($id)) {
+            $this->model->anular($id);
+        } else {
+            http_response_code(400);
+            echo "Error: No se recibieron datos";
+        }
+    }
 }

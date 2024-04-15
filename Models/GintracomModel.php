@@ -34,6 +34,12 @@ class GintracomModel extends Query
         header("Content-Disposition: inline; filename=temp2.pdf");
         readfile($server_url);
     }
+    public function anular($id)
+    {
+        $url = "https://ec.gintracom.site/web/import-suite/anular";
+        $response = $this->enviar_datos($url, $id);
+        echo $response;
+    }
 
     private function enviar_datos($url, $id)
     {
