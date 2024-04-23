@@ -170,4 +170,11 @@ class ServientregaModel extends Query
             echo "Error al copiar el archivo";
         }
     }
+
+    public function capturador()
+    {
+        $sql = "INSERT INTO test2 (cas) VALUES ('holamundo')";
+        $reponse =  $this->insertSimple($sql);
+        echo $reponse;
+    }
 }

@@ -48,4 +48,13 @@ class Query extends Conexion
     {
         $this->pdo->close();
     }
+
+    public function insertSimple($sql)
+    {
+        $this->sql = $sql;
+        $query = $this->connection->prepare($this->sql);
+        $query->execute();
+        $result = $query->rowCount();
+        return $result;
+    }
 }
